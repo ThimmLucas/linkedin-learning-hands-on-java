@@ -39,4 +39,28 @@ public class Account {
   public void setBalance(double balance) {
     this.balance = balance;
   }
+
+  public Account deposit(double ammount) throws ValueException, SQLException {
+    if (ammount < 0) {
+      throw new ValueException("Only positive values");
+    } else {
+      this.setBalance(this.balance + ammount);
+    }
+    this.save();
+    return this;
+  }
+
+  public Account withdraw(double ammount) throws ValueException, SQLException {
+    if (ammount < 0 || ammount > this.balance) {
+      throw new ValueException("Insufficient funds");
+    } else {
+      this.setBalance(this.balance - ammount);
+    }
+    this.save();
+    return this;
+  }
+
+  private void save() throws SQLException {
+    DataSource.UpdateAccount(this.getId(), this.getBalance());
+  }
 }
